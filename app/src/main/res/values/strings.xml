@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">WeatherApp</string>
+
+    <string name="temp">%s\u2103</string>
+    <string name="celsius">\u2103</string>
+    <string name="fahrenheit">\u2109</string>
+    <string name="min_temp">Min Temp: %s</string>
+    <string name="max_temp">Max Temp: %s</string>
+    <string name="humidity">%d\%%</string>
+    <string name="sunset">Sunset</string>
+    <string name="sunrise">Sunrise</string>
+    <string name="humidity_label">Humidity</string>
+    <string name="wind">%s km/h</string>
+    <string name="wind_speed">Wind speed</string>
+    <string name="wind_direction">Wind direction</string>
+    <string name="pressure">%d mBar</string>
+    <string name="pressure_label">Pressure</string>
+    <string name="delete_location">Do you wish to delete %s?</string>
+    <string name="current_location">"Current location"</string>
+    <string name="recent_searches">"Recent Searches"</string>
+    <string name="unknown_location">Location not found!</string>
+    <string name="search_hint">Type city or zip code</string>
+    <string name="build_image_url">"https://openweathermap.org/img/wn/%s@2x.png"</string>
+    <string name="city">%s, %s</string>
+
+    <string name="cancel">Cancel</string>
+    <string name="ok_button">OK</string>
+</resources>

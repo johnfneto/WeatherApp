@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tool="http://schemas.android.com/tools">
+
+    <data>
+        <import type="com.johnfneto.weatherapp.utils.Utils" />
+        <import type="com.johnfneto.weatherapp.database.WeatherLocation" />
+
+        <variable
+            name="location"
+            type="com.johnfneto.weatherapp.database.WeatherLocation" />
+
+    </data>
+
+    <RelativeLayout
+        android:id="@+id/repeatAlarm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/backgroundColor"
+        android:layout_marginBottom="@dimen/list_item_bottom"
+        android:layout_marginStart="@dimen/list_item_margin"
+        android:layout_marginEnd="@dimen/list_item_margin"
+        android:padding="@dimen/layout_margin">
+
+        <TextView
+            android:id="@+id/chapterText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{location.city}"
+            android:textSize="@dimen/text_size_city"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true" />
+
+        <TextView
+            android:id="@+id/timeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:textSize="@dimen/text_size_date"
+            android:text="@{location.formattedDate}"
+            tool:text="01 Mar, 05:34 PM" />
+
+    </RelativeLayout>
+</layout>

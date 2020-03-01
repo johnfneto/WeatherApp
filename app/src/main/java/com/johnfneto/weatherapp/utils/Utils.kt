@@ -1,0 +1,72 @@
+package com.johnfneto.weatherapp.utils
+
+import android.app.Activity
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.util.Log
+import android.view.View
+import android.view.inputmethod.InputMethodManager
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.math.roundToInt
+
+object Utils {
+
+    fun isInternetAvailable(context: Context): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = connectivityManager.activeNetwork ?: return false
+        val networkCapabilities =
+            connectivityManager.getNetworkCapabilities(network) ?: return false
+        networkCapabilities.apply {
+            return when {
+                hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+                hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+                else -> false
+            }
+        }
+    }
+
+    fun hideKeyboard(activity: Activity?) {
+        if (activity != null) {
+            var view = activity.currentFocus
+            if (view == null) {
+                view = View(activity)
+            }
+            inputMethodManager(activity)
+                .hideSoftInputFromWindow(view.windowToken, 0)
+        }
+    }
+
+    private fun inputMethodManager(activity: Activity)
+        = activity.applicationContext.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+
+
+    @JvmStatic
+    fun formatBearing(bearing: Int): String {
+        val directions = arrayOf("N", "NE", "E", "SE", "S", "SW", "W", "NW")
+
+        return directions[ (((bearing % 360) / 45).toDouble().roundToInt() % 8) ]
+    }
+
+
+
+    @JvmStatic
+    fun formatTemp(temperature: Double): String {
+        Log.d("Utils", "temperature $temperature")
+        return temperature.toInt().toString()
+    }
+
+    @JvmStatic
+    fun getWindSpeed(speed: Double) = (String.format("%.0f", speed * 3.6))
+
+    @JvmStatic
+    fun formatTime(time: Int): String = SimpleDateFormat("hh:mm a", Locale.ENGLISH).format(Date(time*1000L))
+
+    @JvmStatic
+    fun formatDate(date: Long): String = SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.ENGLISH).format(Date(date))
+
+    @JvmStatic
+    fun formatShorterDate(date: Long): String = SimpleDateFormat("dd MMM, hh:mm a", Locale.ENGLISH).format(Date(date))
+}
