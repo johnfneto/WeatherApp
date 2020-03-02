@@ -6,8 +6,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
+import android.os.Looper
 import android.provider.Settings
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -17,16 +17,16 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.*
 import com.johnfneto.weatherapp.R
-import com.johnfneto.weatherapp.database.LocationsViewModel
+import com.johnfneto.weatherapp.database.WeatherLocationsViewModel
 import com.johnfneto.weatherapp.databinding.FragmentWeatherScreenBinding
 import com.johnfneto.weatherapp.utils.PERMISSION_ID
 import com.johnfneto.weatherapp.utils.PermissionsManager.checkPermissions
@@ -41,14 +41,15 @@ import com.squareup.picasso.Picasso
 import java.util.*
 
 
-class WeatherScreenFragment : Fragment() {
+class WeatherScreenFragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCallback {
     private val TAG = javaClass.simpleName
 
     private val args: WeatherScreenFragmentArgs by navArgs()
     private lateinit var weatherViewModel: WeatherViewModel
-    private lateinit var locationsViewModel: LocationsViewModel
+    private lateinit var weatherLocationsViewModel: WeatherLocationsViewModel
     private lateinit var binding: FragmentWeatherScreenBinding
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var locationCallback: LocationCallback
     private lateinit var dropdownAdapter: ArrayAdapter<String>
 
     override fun onCreateView(
@@ -61,18 +62,17 @@ class WeatherScreenFragment : Fragment() {
         return binding.root
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
-        locationsViewModel = ViewModelProvider(this).get(LocationsViewModel::class.java)
+        weatherLocationsViewModel = ViewModelProvider(this).get(WeatherLocationsViewModel::class.java)
         weatherViewModel = ViewModelProvider(this).get(WeatherViewModel::class.java)
 
         setupRecentLocationsObserver()
         setupWeatherApiObserver()
-        loadLastLocation(args.locationName)
+        loadLastWeatherLocation(args.locationName)
         setupSearchText()
 
         binding.recentSearchesButton.setOnClickListener {
@@ -80,6 +80,7 @@ class WeatherScreenFragment : Fragment() {
             findNavController().navigate(action)
         }
     }
+
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setupSearchText() {
@@ -107,12 +108,12 @@ class WeatherScreenFragment : Fragment() {
             setOnEditorActionListener { textView, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     if (isInternetAvailable(requireContext())) {
+                        binding.progressBar.visibility = VISIBLE
                         if (textView.text.toString().matches("[0-9]+".toRegex()) && textView.text.toString().length == 5) {
                             weatherViewModel.getWeatherByZipCode(textView.text.toString())
                         } else {
                             weatherViewModel.getWeather(textView.text.toString())
                         }
-                        binding.progressBar.visibility = VISIBLE
                     }
 
                     hideKeyboard(requireActivity())
@@ -122,14 +123,14 @@ class WeatherScreenFragment : Fragment() {
 
             setOnItemClickListener { _, _, position, _ ->
                 if (isInternetAvailable(requireContext())) {
+                    binding.progressBar.visibility = VISIBLE
                     if (position == 0) {
                         getLastLocation()
                     } else {
-                        locationsViewModel.dropdownLocationsList.value?.let { dropdownList ->
+                        weatherLocationsViewModel.dropdownLocationsList.value?.let { dropdownList ->
                             weatherViewModel.getWeather(dropdownList[position])
                         }
                     }
-                    binding.progressBar.visibility = VISIBLE
                     hideKeyboard(requireActivity())
                 }
             }
@@ -137,7 +138,7 @@ class WeatherScreenFragment : Fragment() {
     }
 
     private fun setupRecentLocationsObserver() {
-        locationsViewModel.dropdownLocationsList.observe(viewLifecycleOwner, Observer {  dropdownList ->
+        weatherLocationsViewModel.dropdownLocationsList.observe(viewLifecycleOwner, Observer { dropdownList ->
             dropdownAdapter = ArrayAdapter<String>(requireContext(), R.layout.drop_down_layout, dropdownList)
             binding.searchText.threshold = 1
             binding.searchText.setAdapter(dropdownAdapter)
@@ -147,12 +148,7 @@ class WeatherScreenFragment : Fragment() {
     private fun setupWeatherApiObserver() {
         WeatherRepository.weatherData.observe(viewLifecycleOwner, Observer { weatherData ->
             binding.weatherData = weatherData
-
             binding.progressBar.visibility = GONE
-
-            binding.windDirection?.let {
-                it.rotation = 90F
-            }
 
             binding.imageView?.let {
                 val imageUrl = String.format(getString(R.string.build_image_url), weatherData.weather[0].icon)
@@ -160,12 +156,7 @@ class WeatherScreenFragment : Fragment() {
             }
 
             binding.updatedAt.text = Utils.formatDate(Calendar.getInstance().timeInMillis)
-            locationsViewModel.saveLocation(String.format(resources.getString(R.string.city), weatherData.name, weatherData.sys.country))
-
-            Log.d(
-                TAG,
-                " wind -> (${weatherData.wind.deg}) ${Utils.formatBearing(weatherData.wind.deg)}"
-            )
+            weatherLocationsViewModel.saveLocation(String.format(resources.getString(R.string.city), weatherData.name, weatherData.sys.country))
         })
 
         WeatherRepository.errorStatus.observe(viewLifecycleOwner, Observer { errorMessage ->
@@ -176,11 +167,12 @@ class WeatherScreenFragment : Fragment() {
         })
     }
 
-    private fun loadLastLocation(locationName: String?) {
+    private fun loadLastWeatherLocation(locationName: String?) {
         if (isInternetAvailable(requireContext())) {
+            binding.progressBar.visibility = VISIBLE
             if (locationName == null) {
-                if (locationsViewModel.dropdownLocationsList.value == null) {
-                    locationsViewModel.dropdownLocationsList.observeOnce(viewLifecycleOwner) { dropdownList ->
+                if (weatherLocationsViewModel.dropdownLocationsList.value == null) {
+                    weatherLocationsViewModel.dropdownLocationsList.observeOnce(viewLifecycleOwner) { dropdownList ->
                         if (dropdownList.size > 1) {
                             weatherViewModel.getWeather(dropdownList[1])
                         } else {
@@ -188,8 +180,8 @@ class WeatherScreenFragment : Fragment() {
                         }
                     }
                 } else {
-                    if (locationsViewModel.dropdownLocationsList.value!!.size > 1) {
-                        weatherViewModel.getWeather(locationsViewModel.dropdownLocationsList.value!![1])
+                    if (weatherLocationsViewModel.dropdownLocationsList.value!!.size > 1) {
+                        weatherViewModel.getWeather(weatherLocationsViewModel.dropdownLocationsList.value!![1])
                     } else {
                         getLastLocation()
                     }
@@ -197,7 +189,6 @@ class WeatherScreenFragment : Fragment() {
             } else {
                 weatherViewModel.getWeather(locationName)
             }
-            binding.progressBar.visibility = VISIBLE
         }
     }
 
@@ -205,9 +196,11 @@ class WeatherScreenFragment : Fragment() {
     private fun getLastLocation() {
         if (checkPermissions(requireContext())) {
             if (isLocationEnabled(requireContext())) {
-
-                fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-                    location?.let {
+                fusedLocationClient.lastLocation.addOnCompleteListener(requireActivity()) { task ->
+                    var location: Location? = task.result
+                    if (location == null) {
+                        requestNewLocationData()
+                    } else {
                         weatherViewModel.getWeatherByCoord(
                             location.latitude.toString(),
                             location.longitude.toString()
@@ -227,6 +220,37 @@ class WeatherScreenFragment : Fragment() {
                 ), PERMISSION_ID
             )
         }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun requestNewLocationData() {
+        val locationRequest = LocationRequest()
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        locationRequest.interval = 0
+        locationRequest.fastestInterval = 0
+        locationRequest.numUpdates = 1
+        fusedLocationClient.requestLocationUpdates(
+            locationRequest, locationCallback,
+            Looper.myLooper()
+        )
+        setupLocationCallback()
+    }
+
+    private fun setupLocationCallback() {
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                val lastLocation: Location = locationResult.lastLocation
+                weatherViewModel.getWeatherByCoord(
+                    lastLocation.latitude.toString(),
+                    lastLocation.longitude.toString()
+                )
+                stopLocationCallback()
+            }
+        }
+    }
+
+    private fun stopLocationCallback() {
+        fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 
     override fun onRequestPermissionsResult(

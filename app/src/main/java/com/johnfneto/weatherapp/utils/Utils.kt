@@ -54,7 +54,6 @@ object Utils {
     @JvmStatic
     fun formatBearing(bearing: Int): String {
         val directions = arrayOf("N", "NE", "E", "SE", "S", "SW", "W", "NW")
-
         return directions[ (((bearing % 360) / 45).toDouble().roundToInt() % 8) ]
     }
 

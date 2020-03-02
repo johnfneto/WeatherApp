@@ -18,7 +18,6 @@ class WeatherScreenFragmentTest{
     @Test
     fun clickRecentSearches_OpensRecentLocationsList() {
 
-        // When the "Recent rearches" button is clicked
         Espresso.onView(ViewMatchers.withId(R.id.recentSearchesButton)).perform(ViewActions.click())
 
         // Then the RecycleView should show the Locations List

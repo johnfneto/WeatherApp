@@ -35,11 +35,7 @@ class WeatherViewModel : ViewModel() {
         try {
             weatherApi.getWeatherByCityAsync(city, "metric", BuildConfig.API_KEY)
         } catch (e: IOException) {
-            Response.error<Response<WeatherModel>>(
-                400,
-                "{\"key\":[${e.message}]}"
-                    .toResponseBody("application/json".toMediaTypeOrNull())
-            )
+            buildErrorResponse(e.message)
         }
     }
 
@@ -61,11 +57,7 @@ class WeatherViewModel : ViewModel() {
             try {
                 weatherApi.getWeatherByZipCodeAsync(zipCode, "metric", BuildConfig.API_KEY)
             } catch (e: IOException) {
-                Response.error<Response<WeatherModel>>(
-                    400,
-                    "{\"key\":[${e.message}]}"
-                        .toResponseBody("application/json".toMediaTypeOrNull())
-                )
+                buildErrorResponse(e.message)
             }
         }
 
@@ -87,11 +79,13 @@ class WeatherViewModel : ViewModel() {
             try {
                 weatherApi.getWeatherByCoordAsync(lat, lon, "metric", BuildConfig.API_KEY)
             } catch (e: IOException) {
-                Response.error<Response<WeatherModel>>(
-                    400,
-                    "{\"key\":[${e.message}]}"
-                        .toResponseBody("application/json".toMediaTypeOrNull())
-                )
+                buildErrorResponse(e.message)
             }
         }
+
+    private fun buildErrorResponse(message: String?) = Response.error<Response<WeatherModel>>(
+        400,
+        "{\"key\":[$message]}"
+            .toResponseBody("application/json".toMediaTypeOrNull())
+    )
 }

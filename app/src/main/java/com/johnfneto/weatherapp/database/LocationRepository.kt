@@ -1,6 +1,7 @@
 package com.johnfneto.weatherapp.database
 
 import androidx.lifecycle.LiveData
+import com.johnfneto.weatherapp.models.WeatherLocation
 
 class LocationRepository(private val locationDao: LocationDao) {
 

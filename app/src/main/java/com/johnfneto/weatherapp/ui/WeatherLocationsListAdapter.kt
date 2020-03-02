@@ -6,13 +6,13 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.johnfneto.weatherapp.R
-import com.johnfneto.weatherapp.database.WeatherLocation
+import com.johnfneto.weatherapp.models.WeatherLocation
 import com.johnfneto.weatherapp.databinding.LocationsListItemBinding
 
-class LocationsListAdapter(
+class WeatherLocationsListAdapter(
     private val onClickListener: View.OnClickListener,
     private val onLongClickListener: View.OnLongClickListener
-) : RecyclerView.Adapter<LocationsListAdapter.DataBindingViewHolder>() {
+) : RecyclerView.Adapter<WeatherLocationsListAdapter.DataBindingViewHolder>() {
     private val TAG = javaClass.simpleName
 
     private lateinit var binding: LocationsListItemBinding

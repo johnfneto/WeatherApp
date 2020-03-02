@@ -2,6 +2,7 @@ package com.johnfneto.weatherapp.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.johnfneto.weatherapp.models.WeatherLocation
 
 @Dao
 interface LocationDao {

@@ -4,11 +4,11 @@
 
     <data>
         <import type="com.johnfneto.weatherapp.utils.Utils" />
-        <import type="com.johnfneto.weatherapp.database.WeatherLocation" />
+        <import type="com.johnfneto.weatherapp.models.WeatherLocation" />
 
         <variable
             name="location"
-            type="com.johnfneto.weatherapp.database.WeatherLocation" />
+            type="com.johnfneto.weatherapp.models.WeatherLocation" />
 
     </data>
 

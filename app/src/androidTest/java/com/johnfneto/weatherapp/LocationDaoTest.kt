@@ -7,7 +7,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.johnfneto.weatherapp.database.AppDataBase
 import com.johnfneto.weatherapp.database.LocationDao
-import com.johnfneto.weatherapp.database.WeatherLocation
+import com.johnfneto.weatherapp.models.WeatherLocation
 import kotlinx.coroutines.runBlocking
 import org.junit.*
 import org.junit.Assert.assertEquals
@@ -46,7 +46,11 @@ class LocationDaoTest {
     @Test
     @Throws(Exception::class)
     fun insertAndGetLocation() = runBlocking {
-        val location = WeatherLocation(null, "NoWhereCity", Date().time)
+        val location = WeatherLocation(
+            null,
+            "NoWhereCity",
+            Date().time
+        )
         locationDao.saveLocation(location)
         val locationsList = locationDao.getLocationsList().waitForValue()
         assertEquals(locationsList[0].city, location.city)
@@ -55,9 +59,17 @@ class LocationDaoTest {
     @Test
     @Throws(Exception::class)
     fun getAllLocations() = runBlocking {
-        val myLocation = WeatherLocation(null, "myCity", Date().time)
+        val myLocation = WeatherLocation(
+            null,
+            "myCity",
+            Date().time
+        )
         locationDao.saveLocation(myLocation)
-        val yourLocation = WeatherLocation(null, "yourCity", Date().time)
+        val yourLocation = WeatherLocation(
+            null,
+            "yourCity",
+            Date().time
+        )
         locationDao.saveLocation(yourLocation)
         val locationsList = locationDao.getLocationsList().waitForValue()
         assertEquals(locationsList[0].city, myLocation.city)
@@ -67,9 +79,17 @@ class LocationDaoTest {
     @Test
     @Throws(Exception::class)
     fun deleteAllLocations() = runBlocking {
-        val myLocation = WeatherLocation(null, "myCity", Date().time)
+        val myLocation = WeatherLocation(
+            null,
+            "myCity",
+            Date().time
+        )
         locationDao.saveLocation(myLocation)
-        val yourLocation = WeatherLocation(null, "yourCity", Date().time)
+        val yourLocation = WeatherLocation(
+            null,
+            "yourCity",
+            Date().time
+        )
         locationDao.saveLocation(yourLocation)
         locationDao.deleteAll()
         val locationsList = locationDao.getLocationsList().waitForValue()

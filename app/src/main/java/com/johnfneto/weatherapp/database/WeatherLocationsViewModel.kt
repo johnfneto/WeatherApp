@@ -2,10 +2,11 @@ package com.johnfneto.weatherapp.database
 
 import android.app.Application
 import androidx.lifecycle.*
+import com.johnfneto.weatherapp.models.WeatherLocation
 import kotlinx.coroutines.launch
 import java.util.*
 
-class LocationsViewModel(application: Application) : AndroidViewModel(application) {
+class WeatherLocationsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: LocationRepository
     val locationsList: LiveData<List<WeatherLocation>>

@@ -4,12 +4,9 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.sqlite.db.SupportSQLiteDatabase
+import com.johnfneto.weatherapp.models.WeatherLocation
 import com.johnfneto.weatherapp.utils.DATABASE_NAME
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.util.*
 
 /**
  * The Room database for weather location

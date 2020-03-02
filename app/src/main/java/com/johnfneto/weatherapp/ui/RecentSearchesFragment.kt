@@ -10,32 +10,31 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.johnfneto.weatherapp.R
-import com.johnfneto.weatherapp.database.LocationsViewModel
-import com.johnfneto.weatherapp.database.WeatherLocation
+import com.johnfneto.weatherapp.database.WeatherLocationsViewModel
+import com.johnfneto.weatherapp.models.WeatherLocation
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import kotlinx.android.synthetic.main.fragment_recent_searches.*
 
 
 class RecentSearchesFragment : Fragment(R.layout.fragment_recent_searches) {
     private val TAG = javaClass.simpleName
 
-    private lateinit var locationsViewModel: LocationsViewModel
+    private lateinit var weatherLocationsViewModel: WeatherLocationsViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        locationsViewModel = ViewModelProvider(this).get(LocationsViewModel::class.java)
+        weatherLocationsViewModel = ViewModelProvider(this).get(WeatherLocationsViewModel::class.java)
 
         val llm = LinearLayoutManager(requireContext())
         llm.orientation = LinearLayoutManager.VERTICAL
         recycleListView.layoutManager = llm
-        val adapter = LocationsListAdapter(
+        val adapter = WeatherLocationsListAdapter(
             onItemClickListener,
             onLongClickListener)
         recycleListView.adapter = adapter
 
-        locationsViewModel.locationsList.observe(viewLifecycleOwner, Observer { locationsList ->
+        weatherLocationsViewModel.locationsList.observe(viewLifecycleOwner, Observer { locationsList ->
             locationsList?.let {
                 adapter.updateLocations(it)
             }
@@ -71,7 +70,7 @@ class RecentSearchesFragment : Fragment(R.layout.fragment_recent_searches) {
         val dialog = AlertDialog.Builder(requireContext()).create()
         dialog.setView(dialogView)
         dialogView.findViewById<View>(R.id.okButton).setOnClickListener {
-            locationsViewModel.deleteLocation(location.uid!!)
+            weatherLocationsViewModel.deleteLocation(location.uid!!)
             dialog.dismiss()
         }
         dialogView.findViewById<View>(R.id.cancelButton).setOnClickListener {

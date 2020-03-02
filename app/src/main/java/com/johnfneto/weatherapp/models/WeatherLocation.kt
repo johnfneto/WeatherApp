@@ -1,4 +1,4 @@
-package com.johnfneto.weatherapp.database
+package com.johnfneto.weatherapp.models
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
