@@ -38,29 +38,6 @@
                 android:drawableEnd="@drawable/ic_search_white"
                 android:background="@color/backgroundColor" />
 
-            <com.google.android.material.button.MaterialButtonToggleGroup
-                android:id="@+id/toggleButton"
-                android:background="@color/whiteColor"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/imageView"
-                android:layout_centerHorizontal="true">
-
-                <Button
-                    android:id="@+id/celsiusButton"
-                    style="?attr/materialButtonOutlinedStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/celsius" />
-
-                <Button
-                    android:id="@+id/fahrenheitButton"
-                    style="?attr/materialButtonOutlinedStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/fahrenheit" />
-            </com.google.android.material.button.MaterialButtonToggleGroup>
-
             <ImageView
                 android:id="@+id/imageView"
                 android:layout_width="wrap_content"
@@ -138,11 +115,7 @@
                         android:layout_marginStart="@dimen/layout_padding"
                         android:text="@{String.format(@string/max_temp, weatherData.main.formattedTempMax)}" />
                 </LinearLayout>
-
-
-
             </LinearLayout>
-
 
             <LinearLayout
                 android:id="@+id/detailsContainer"
@@ -155,6 +128,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:layout_marginBottom="@dimen/tile_margin"
                     android:weightSum="3">
 
                     <LinearLayout
@@ -164,6 +138,7 @@
                         android:background="@color/backgroundColor"
                         android:gravity="center"
                         android:orientation="vertical"
+                        android:layout_marginEnd="@dimen/tile_margin"
                         android:padding="@dimen/tile_padding">
 
                         <ImageView
@@ -186,10 +161,6 @@
                             android:textSize="@dimen/text_size_values" />
                     </LinearLayout>
 
-                    <Space
-                        android:layout_width="@dimen/tile_margin"
-                        android:layout_height="wrap_content" />
-
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -197,6 +168,7 @@
                         android:background="@color/backgroundColor"
                         android:gravity="center"
                         android:orientation="vertical"
+                        android:layout_marginEnd="@dimen/tile_margin"
                         android:padding="@dimen/tile_padding">
 
                         <ImageView
@@ -218,10 +190,6 @@
                             android:text="@{weatherData.sys.formattedSunset}"
                             android:textSize="@dimen/text_size_values" />
                     </LinearLayout>
-
-                    <Space
-                        android:layout_width="@dimen/tile_margin"
-                        android:layout_height="wrap_content" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -253,14 +221,11 @@
                     </LinearLayout>
                 </LinearLayout>
 
-                <Space
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/tile_margin" />
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:layout_marginBottom="@dimen/tile_margin"
                     android:weightSum="3">
 
                     <LinearLayout
@@ -270,6 +235,7 @@
                         android:background="@color/backgroundColor"
                         android:gravity="center"
                         android:orientation="vertical"
+                        android:layout_marginEnd="@dimen/tile_margin"
                         android:padding="@dimen/tile_padding">
 
                         <ImageView
@@ -292,10 +258,6 @@
                             android:textSize="@dimen/text_size_values" />
                     </LinearLayout>
 
-                    <Space
-                        android:layout_width="@dimen/tile_margin"
-                        android:layout_height="wrap_content" />
-
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -303,6 +265,7 @@
                         android:background="@color/backgroundColor"
                         android:gravity="center"
                         android:orientation="vertical"
+                        android:layout_marginEnd="@dimen/tile_margin"
                         android:padding="@dimen/tile_padding">
 
                         <ImageView
@@ -324,10 +287,6 @@
                             android:text="@{String.format(@string/humidity, weatherData.main.humidity)}"
                             android:textSize="@dimen/text_size_values" />
                     </LinearLayout>
-
-                    <Space
-                        android:layout_width="@dimen/tile_margin"
-                        android:layout_height="wrap_content" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -371,20 +330,11 @@
         </RelativeLayout>
 
         <ProgressBar
-            android:id="@+id/loader"
+            android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/errorText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="Something went wrong"
-            android:visibility="gone" />
-
 
     </RelativeLayout>
 </layout>

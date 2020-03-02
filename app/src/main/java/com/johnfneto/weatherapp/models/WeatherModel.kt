@@ -18,3 +18,6 @@ class WeatherModel (
 	@SerializedName("name") val name : String = "",
 	@SerializedName("cod") val cod : Int
 )
+{
+	var errorMessage: String = ""
+}

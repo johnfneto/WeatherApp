@@ -11,6 +11,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
@@ -31,6 +33,7 @@ import com.johnfneto.weatherapp.utils.PermissionsManager.checkPermissions
 import com.johnfneto.weatherapp.utils.PermissionsManager.isLocationEnabled
 import com.johnfneto.weatherapp.utils.Utils
 import com.johnfneto.weatherapp.utils.Utils.hideKeyboard
+import com.johnfneto.weatherapp.utils.Utils.isInternetAvailable
 import com.johnfneto.weatherapp.utils.observeOnce
 import com.johnfneto.weatherapp.weather_api.WeatherRepository
 import com.johnfneto.weatherapp.weather_api.WeatherViewModel
@@ -91,7 +94,10 @@ class WeatherScreenFragment : Fragment() {
 
                 if (event.action == MotionEvent.ACTION_UP) {
                     if (event.rawX >= (binding.searchText.right - binding.searchText.compoundDrawables[2].bounds.width())) {
-                        weatherViewModel.getWeather(binding.searchText.toString())
+                        if (isInternetAvailable(requireContext())) {
+                            binding.progressBar.visibility = VISIBLE
+                            weatherViewModel.getWeather(binding.searchText.toString())
+                        }
                         hideKeyboard(requireActivity())
                     }
                 }
@@ -100,25 +106,32 @@ class WeatherScreenFragment : Fragment() {
 
             setOnEditorActionListener { textView, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    if (textView.text.toString().matches("[0-9]+".toRegex()) && textView.text.toString().length == 5) {
-                        weatherViewModel.getWeatherByZipCode(textView.text.toString())
-                    } else {
-                        weatherViewModel.getWeather(textView.text.toString())
+                    if (isInternetAvailable(requireContext())) {
+                        if (textView.text.toString().matches("[0-9]+".toRegex()) && textView.text.toString().length == 5) {
+                            weatherViewModel.getWeatherByZipCode(textView.text.toString())
+                        } else {
+                            weatherViewModel.getWeather(textView.text.toString())
+                        }
+                        binding.progressBar.visibility = VISIBLE
                     }
+
                     hideKeyboard(requireActivity())
                 }
                 false
             }
 
             setOnItemClickListener { _, _, position, _ ->
-                if (position == 0) {
-                    getLastLocation()
-                } else {
-                    locationsViewModel.dropdownLocationsList.value?.let { dropdownList ->
-                        weatherViewModel.getWeather(dropdownList[position])
+                if (isInternetAvailable(requireContext())) {
+                    if (position == 0) {
+                        getLastLocation()
+                    } else {
+                        locationsViewModel.dropdownLocationsList.value?.let { dropdownList ->
+                            weatherViewModel.getWeather(dropdownList[position])
+                        }
                     }
+                    binding.progressBar.visibility = VISIBLE
+                    hideKeyboard(requireActivity())
                 }
-                hideKeyboard(requireActivity())
             }
         }
     }
@@ -133,55 +146,58 @@ class WeatherScreenFragment : Fragment() {
 
     private fun setupWeatherApiObserver() {
         WeatherRepository.weatherData.observe(viewLifecycleOwner, Observer { weatherData ->
-            WeatherRepository.weatherData.value?.let {
-                binding.weatherData = weatherData
+            binding.weatherData = weatherData
 
-                binding.windDirection?.let {
-                    it.rotation = 90F
-                }
+            binding.progressBar.visibility = GONE
 
+            binding.windDirection?.let {
+                it.rotation = 90F
+            }
+
+            binding.imageView?.let {
                 val imageUrl = String.format(getString(R.string.build_image_url), weatherData.weather[0].icon)
                 Picasso.get().load(imageUrl).resize(200, 200).into(binding.imageView)
-
-                binding.updatedAt.text = Utils.formatDate(Calendar.getInstance().timeInMillis)
-                locationsViewModel.saveLocation(String.format(resources.getString(R.string.city), weatherData.name, weatherData.sys.country))
-
-                Log.d(
-                    TAG,
-                    " wind -> (${weatherData.wind.deg}) ${Utils.formatBearing(weatherData.wind.deg)}"
-                )
-
             }
+
+            binding.updatedAt.text = Utils.formatDate(Calendar.getInstance().timeInMillis)
+            locationsViewModel.saveLocation(String.format(resources.getString(R.string.city), weatherData.name, weatherData.sys.country))
+
+            Log.d(
+                TAG,
+                " wind -> (${weatherData.wind.deg}) ${Utils.formatBearing(weatherData.wind.deg)}"
+            )
         })
 
-        WeatherRepository.errorStatus.observe(viewLifecycleOwner, Observer { errorStatus ->
-            Toast.makeText(requireContext(), resources.getString(R.string.unknown_location), Toast.LENGTH_SHORT).show()
+        WeatherRepository.errorStatus.observe(viewLifecycleOwner, Observer { errorMessage ->
+            errorMessage?.let {
+                Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
+                binding.progressBar.visibility = GONE
+            }
         })
     }
 
     private fun loadLastLocation(locationName: String?) {
-        if (locationName == null) {
-            if (locationsViewModel.dropdownLocationsList.value == null) {
-                locationsViewModel.dropdownLocationsList.observeOnce(viewLifecycleOwner) { dropdownList ->
-                    if (dropdownList.size > 1) {
-                        weatherViewModel.getWeather(dropdownList[1])
+        if (isInternetAvailable(requireContext())) {
+            if (locationName == null) {
+                if (locationsViewModel.dropdownLocationsList.value == null) {
+                    locationsViewModel.dropdownLocationsList.observeOnce(viewLifecycleOwner) { dropdownList ->
+                        if (dropdownList.size > 1) {
+                            weatherViewModel.getWeather(dropdownList[1])
+                        } else {
+                            getLastLocation()
+                        }
                     }
-                    else {
+                } else {
+                    if (locationsViewModel.dropdownLocationsList.value!!.size > 1) {
+                        weatherViewModel.getWeather(locationsViewModel.dropdownLocationsList.value!![1])
+                    } else {
                         getLastLocation()
                     }
                 }
+            } else {
+                weatherViewModel.getWeather(locationName)
             }
-            else {
-                if (locationsViewModel.dropdownLocationsList.value!!.size > 1) {
-                    weatherViewModel.getWeather(locationsViewModel.dropdownLocationsList.value!![1])
-                }
-                else {
-                    getLastLocation()
-                }
-            }
-        }
-        else {
-            weatherViewModel.getWeather(locationName)
+            binding.progressBar.visibility = VISIBLE
         }
     }
 
@@ -199,7 +215,7 @@ class WeatherScreenFragment : Fragment() {
                     }
                 }
             } else {
-                Toast.makeText(requireContext(), "Turn on location", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), "Turn on location please", Toast.LENGTH_LONG).show()
                 val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
                 startActivity(intent)
             }

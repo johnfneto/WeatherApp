@@ -7,5 +7,5 @@ object WeatherRepository {
 
     var weatherData = MutableLiveData<WeatherModel>()
 
-    var errorStatus: MutableLiveData<Boolean> = MutableLiveData()
+    var errorStatus: MutableLiveData<String> = MutableLiveData()
 }

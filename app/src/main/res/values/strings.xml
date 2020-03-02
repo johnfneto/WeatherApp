@@ -4,8 +4,8 @@
     <string name="temp">%s\u2103</string>
     <string name="celsius">\u2103</string>
     <string name="fahrenheit">\u2109</string>
-    <string name="min_temp">Min Temp: %s</string>
-    <string name="max_temp">Max Temp: %s</string>
+    <string name="min_temp">Min Temp: %s\u2103</string>
+    <string name="max_temp">Max Temp: %s\u2103</string>
     <string name="humidity">%d\%%</string>
     <string name="sunset">Sunset</string>
     <string name="sunrise">Sunrise</string>
@@ -17,6 +17,7 @@
     <string name="pressure_label">Pressure</string>
     <string name="delete_location">Do you wish to delete %s?</string>
     <string name="current_location">"Current location"</string>
+    <string name="internet_unavailable">"Internet not connected!"</string>
     <string name="recent_searches">"Recent Searches"</string>
     <string name="unknown_location">Location not found!</string>
     <string name="search_hint">Type city or zip code</string>

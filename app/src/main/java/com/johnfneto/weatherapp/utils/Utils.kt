@@ -7,6 +7,8 @@ import android.net.NetworkCapabilities
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
+import com.johnfneto.weatherapp.R
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
@@ -16,14 +18,21 @@ object Utils {
     fun isInternetAvailable(context: Context): Boolean {
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val network = connectivityManager.activeNetwork ?: return false
+        val network = connectivityManager.activeNetwork
         val networkCapabilities =
-            connectivityManager.getNetworkCapabilities(network) ?: return false
+            connectivityManager.getNetworkCapabilities(network)
+        if (network == null || networkCapabilities == null) {
+            Toast.makeText(context, context.resources.getString(R.string.internet_unavailable), Toast.LENGTH_SHORT).show()
+            return false
+        }
         networkCapabilities.apply {
             return when {
                 hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
                 hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-                else -> false
+                else -> {
+                    Toast.makeText(context, context.resources.getString(R.string.internet_unavailable), Toast.LENGTH_SHORT).show()
+                    false
+                }
             }
         }
     }
@@ -42,7 +51,6 @@ object Utils {
     private fun inputMethodManager(activity: Activity)
         = activity.applicationContext.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
 
-
     @JvmStatic
     fun formatBearing(bearing: Int): String {
         val directions = arrayOf("N", "NE", "E", "SE", "S", "SW", "W", "NW")
@@ -50,11 +58,8 @@ object Utils {
         return directions[ (((bearing % 360) / 45).toDouble().roundToInt() % 8) ]
     }
 
-
-
     @JvmStatic
     fun formatTemp(temperature: Double): String {
-        Log.d("Utils", "temperature $temperature")
         return temperature.toInt().toString()
     }
 

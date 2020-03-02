@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
         <import type="com.johnfneto.weatherapp.models.WeatherModel" />
         <import type="com.johnfneto.weatherapp.utils.Utils" />
+        <import type="android.view.View" />
 
         <variable
             name="weatherData"
@@ -29,43 +30,37 @@
                 android:id="@+id/searchText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="5dp"
+                android:padding="@dimen/text_margin"
                 android:imeOptions="actionSearch"
                 android:singleLine="true"
                 android:textColor="@color/colorPrimaryDark"
-                android:hint="Type city or zip code"
-                android:drawableRight="@drawable/ic_search_white"
+                android:hint="@string/search_hint"
+                android:drawableEnd="@drawable/ic_search_white"
                 android:background="@color/backgroundColor" />
-
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/overviewContainer"
-                android:visibility="invisible"
-                android:layout_centerHorizontal="true"/>
 
             <LinearLayout
                 android:id="@+id/addressContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="@dimen/tile_margin"
                 android:layout_below="@+id/searchText"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="@{weatherData == null ? View.INVISIBLE : View.VISIBLE}">
 
                 <TextView
                     android:id="@+id/address"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{String.format(@string/city, weatherData.name, weatherData.sys.country)}"
-                    android:textSize="24dp" />
+                    android:textSize="@dimen/text_size_city" />
 
                 <TextView
                     android:id="@+id/updated_at"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="14dp" />
+                    android:textSize="@dimen/text_size_date" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -73,7 +68,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="@{weatherData == null ? View.INVISIBLE : View.VISIBLE}">
 
                 <TextView
                     android:id="@+id/status"
@@ -81,7 +77,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="@{weatherData.weather[0].description}"
-                    android:textSize="18dp" />
+                    android:textSize="@dimen/text_size_description" />
 
                 <TextView
                     android:id="@+id/temp"
@@ -89,8 +85,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="sans-serif-thin"
-                    android:text="@{String.format(@string/temp, Utils.formatTemp(weatherData.main.temp))}"
-                    android:textSize="90dp" />
+                    android:text="@{String.format(@string/temp, weatherData.main.formattedTemperature)}"
+                    android:textSize="@dimen/text_size_temperature" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -102,21 +98,17 @@
                         android:id="@+id/temp_min"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{String.format(@string/min_temp, Utils.formatTemp(weatherData.main.temp_min))}" />
-
-                    <Space
-                        android:layout_width="50dp"
-                        android:layout_height="wrap_content" />
+                        android:layout_marginEnd="@dimen/layout_padding"
+                        android:text="@{String.format(@string/min_temp, weatherData.main.formattedTempMin)}" />
 
                     <TextView
                         android:id="@+id/temp_max"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{String.format(@string/max_temp, Utils.formatTemp(weatherData.main.temp_max))}" />
+                        android:layout_marginStart="@dimen/layout_padding"
+                        android:text="@{String.format(@string/max_temp, weatherData.main.formattedTempMax)}" />
                 </LinearLayout>
-
             </LinearLayout>
-
 
             <LinearLayout
                 android:id="@+id/detailsContainer"
@@ -132,24 +124,16 @@
                     android:backgroundTint="@color/colorPrimary"
                     android:textAllCaps="false"
                     android:text="@string/recent_searches" />
+
             </LinearLayout>
         </RelativeLayout>
 
         <ProgressBar
-            android:id="@+id/loader"
+            android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/errorText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="Something went wrong"
-            android:visibility="gone" />
-
 
     </RelativeLayout>
 </layout>

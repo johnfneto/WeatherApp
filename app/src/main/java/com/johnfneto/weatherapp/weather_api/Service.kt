@@ -12,7 +12,6 @@ class Service {
     private val okHttpClient: OkHttpClient = OkHttpClient().newBuilder()
         .connectTimeout(20, TimeUnit.SECONDS)
         .readTimeout(20, TimeUnit.SECONDS)
-        .addInterceptor(HeaderInterceptor())
         .build()
 
     private val retrofit = Retrofit.Builder()
@@ -23,16 +22,5 @@ class Service {
 
     fun <S> createService(serviceClass: Class<S>): S {
         return retrofit.create(serviceClass)
-    }
-}
-
-class HeaderInterceptor : Interceptor {
-    override fun intercept(chain: Interceptor.Chain): Response = chain.run {
-        proceed(
-            request()
-                .newBuilder()
-                .addHeader("appid", BuildConfig.API_KEY)
-                .build()
-        )
     }
 }
