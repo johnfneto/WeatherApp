@@ -42,7 +42,7 @@ class WeatherLocationsListAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: WeatherLocation) {
-            binding.root.tag = item.city
+            binding.root.tag = item
             binding.location = item
 
             itemView.setOnClickListener(onClickListener)

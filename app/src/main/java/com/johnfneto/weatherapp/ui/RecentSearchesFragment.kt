@@ -43,10 +43,10 @@ class RecentSearchesFragment : Fragment(R.layout.fragment_recent_searches) {
 
     private val onItemClickListener =
         View.OnClickListener { view ->
-            val locationName: String = view.tag as String
+            val location = view.tag as WeatherLocation
 
             val args = Bundle()
-            args.putString("locationName", locationName)
+            args.putString("locationName", location.city)
             Navigation.findNavController(getView()!!).navigate(R.id.weatherScreenFragment, args)
 
             // We should be using the code below, but there is a bug on the API:
