@@ -1,4 +1,4 @@
-package com.johnfneto.weatherapp
+package com.johnfneto.weatherapp.utils
 
 /*
  * Copyright (C) 2017 The Android Open Source Project

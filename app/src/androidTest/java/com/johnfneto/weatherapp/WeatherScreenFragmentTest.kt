@@ -1,15 +1,16 @@
 package com.johnfneto.weatherapp
 
-import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.matcher.ViewMatchers
-import com.johnfneto.weatherapp.ui.MainActivity
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.rule.ActivityTestRule
+import com.johnfneto.weatherapp.ui.MainActivity
 import org.junit.Rule
 import org.junit.Test
 
-class WeatherScreenFragmentTest{
+class WeatherScreenFragmentTest {
 
     @Rule
     @JvmField
@@ -18,10 +19,9 @@ class WeatherScreenFragmentTest{
     @Test
     fun clickRecentSearches_OpensRecentLocationsList() {
 
-        Espresso.onView(ViewMatchers.withId(R.id.recentSearchesButton)).perform(ViewActions.click())
+        onView(withId(R.id.recentSearchesButton)).perform(ViewActions.click())
 
-        // Then the RecycleView should show the Locations List
-        Espresso.onView(ViewMatchers.withId(R.id.recycleListView))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withId(R.id.recycleListView))
+            .check(matches(isDisplayed()))
     }
 }

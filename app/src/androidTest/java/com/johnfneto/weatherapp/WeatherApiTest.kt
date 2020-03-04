@@ -63,6 +63,4 @@ class WeatherApiTest {
         Assert.assertEquals(mockRepo.name, "San Diego")
         Assert.assertEquals(mockRepo.sys.country, "US")
     }
-
-
 }

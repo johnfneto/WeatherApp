@@ -8,6 +8,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.johnfneto.weatherapp.database.AppDataBase
 import com.johnfneto.weatherapp.database.LocationDao
 import com.johnfneto.weatherapp.models.WeatherLocation
+import com.johnfneto.weatherapp.utils.waitForValue
 import kotlinx.coroutines.runBlocking
 import org.junit.*
 import org.junit.Assert.assertEquals
@@ -72,8 +73,8 @@ class LocationDaoTest {
         )
         locationDao.saveLocation(yourLocation)
         val locationsList = locationDao.getLocationsList().waitForValue()
-        assertEquals(locationsList[0].city, myLocation.city)
-        assertEquals(locationsList[1].city, yourLocation.city)
+        assertEquals(locationsList[1].city, myLocation.city)
+        assertEquals(locationsList[0].city, yourLocation.city)
     }
 
     @Test

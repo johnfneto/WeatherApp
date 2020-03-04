@@ -25,7 +25,7 @@ class ShowWeatherScreenFragmentTest {
     fun jumpToWeatherScreenFragment() {
         activityTestRule.activity.apply {
             runOnUiThread {
-                val bundle = Bundle().apply { putString("locationName", "Sydney, AU") }
+                val bundle = Bundle().apply { putString("locationName", MY_CITY) }
                 findNavController(R.id.nav_host_fragment).navigate(
                     R.id.weatherScreenFragment,
                     bundle
