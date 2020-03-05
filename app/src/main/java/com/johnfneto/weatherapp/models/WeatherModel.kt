@@ -1,7 +1,9 @@
 package com.johnfneto.weatherapp.models
 
 import com.google.gson.annotations.SerializedName
+import com.johnfneto.weatherapp.utils.OpenForTesting
 
+@OpenForTesting
 class WeatherModel (
 
 	@SerializedName("coord") val coord : Coord,
@@ -18,6 +20,3 @@ class WeatherModel (
 	@SerializedName("name") val name : String = "",
 	@SerializedName("cod") val cod : Int
 )
-{
-	var errorMessage: String = ""
-}

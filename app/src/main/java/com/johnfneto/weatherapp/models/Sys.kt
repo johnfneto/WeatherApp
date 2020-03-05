@@ -1,8 +1,10 @@
 package com.johnfneto.weatherapp.models
 
 import com.google.gson.annotations.SerializedName
+import com.johnfneto.weatherapp.utils.OpenForTesting
 import com.johnfneto.weatherapp.utils.Utils
 
+@OpenForTesting
 data class Sys (
 
 	@SerializedName("type") val type : Int,

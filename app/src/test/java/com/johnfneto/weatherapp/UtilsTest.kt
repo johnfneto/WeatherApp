@@ -23,5 +23,4 @@ class UtilsTest {
     fun formatShorterDate_isCorrect() {
         assertEquals("02 Mar, 03:31 PM", Utils.formatShorterDate(1583123469811))
     }
-
 }

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.johnfneto.weatherapp.BuildConfig
 import com.johnfneto.weatherapp.models.WeatherModel
+import com.johnfneto.weatherapp.utils.OpenForTesting
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -13,6 +14,7 @@ import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.Response
 import java.io.IOException
 
+@OpenForTesting
 class WeatherViewModel : ViewModel() {
     private val TAG = javaClass.simpleName
 
@@ -38,6 +40,7 @@ class WeatherViewModel : ViewModel() {
             buildErrorResponse(e.message)
         }
     }
+
 
     fun getWeatherByZipCode(zipCode: String) {
         viewModelScope.launch {

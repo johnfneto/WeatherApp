@@ -1,6 +1,5 @@
 package com.johnfneto.weatherapp
 
-
 import com.johnfneto.weatherapp.models.WeatherModel
 import com.johnfneto.weatherapp.weather_api.Service
 import com.johnfneto.weatherapp.weather_api.WeatherAPI
@@ -9,10 +8,7 @@ import com.nhaarman.mockitokotlin2.mock
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.*
-import org.junit.After
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Test
+import org.junit.*
 import org.mockito.Mockito.mock
 import retrofit2.Response
 

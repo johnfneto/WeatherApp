@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit
  * Get the value from a LiveData object. We're waiting for LiveData to emit, for 2 seconds.
  * Once we got a notification via onChanged, we stop observing.
  */
+@Suppress("UNCHECKED_CAST")
 @Throws(InterruptedException::class)
 fun <T> LiveData<T>.waitForValue(): T {
     val data = arrayOfNulls<Any>(1)
