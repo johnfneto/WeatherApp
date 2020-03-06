@@ -8,11 +8,11 @@ import retrofit2.http.Query
 interface WeatherAPI {
 
     @GET("weather")
-    suspend fun getWeatherByCityAsync(@Query("q") city: String, @Query("units") units: String, @Query("appid") appid: String): Response<WeatherModel>
+    suspend fun getWeatherByCityAsync(@Query("q") city: String, @Query("appid") appid: String): Response<WeatherModel>
 
     @GET("weather")
-    suspend fun getWeatherByZipCodeAsync(@Query("zip") zipCode: String, @Query("units") units: String, @Query("appid") appid: String): Response<WeatherModel>
+    suspend fun getWeatherByZipCodeAsync(@Query("zip") zipCode: String, @Query("appid") appid: String): Response<WeatherModel>
 
     @GET("weather")
-    suspend fun getWeatherByCoordAsync(@Query("lat") lat: String, @Query("lon") lon: String, @Query("units") units: String, @Query("appid") appid: String): Response<WeatherModel>
+    suspend fun getWeatherByCoordAsync(@Query("lat") lat: String, @Query("lon") lon: String, @Query("appid") appid: String): Response<WeatherModel>
 }

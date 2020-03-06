@@ -8,15 +8,12 @@ import android.location.Location
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
+import android.util.Log
+import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.ArrayAdapter
-import android.widget.Toast
+import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -35,7 +32,6 @@ import com.johnfneto.weatherapp.utils.Utils
 import com.johnfneto.weatherapp.utils.Utils.hideKeyboard
 import com.johnfneto.weatherapp.utils.Utils.isInternetAvailable
 import com.johnfneto.weatherapp.utils.observeOnce
-import com.johnfneto.weatherapp.weather_api.WeatherRepository
 import com.johnfneto.weatherapp.weather_api.WeatherViewModel
 import com.squareup.picasso.Picasso
 import java.util.*
@@ -146,7 +142,7 @@ class WeatherScreenFragment : Fragment(), ActivityCompat.OnRequestPermissionsRes
     }
 
     private fun setupWeatherApiObserver() {
-        WeatherRepository.weatherData.observe(viewLifecycleOwner, Observer { weatherData ->
+            weatherViewModel.weatherData.observe(viewLifecycleOwner, Observer { weatherData ->
             binding.weatherData = weatherData
             binding.progressBar.visibility = GONE
 
@@ -159,7 +155,7 @@ class WeatherScreenFragment : Fragment(), ActivityCompat.OnRequestPermissionsRes
             weatherLocationsViewModel.saveLocation(String.format(resources.getString(R.string.city), weatherData.name, weatherData.sys.country))
         })
 
-        WeatherRepository.errorStatus.observe(viewLifecycleOwner, Observer { errorMessage ->
+        weatherViewModel.errorStatus.observe(viewLifecycleOwner, Observer { errorMessage ->
             errorMessage?.let {
                 Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
                 binding.progressBar.visibility = GONE
