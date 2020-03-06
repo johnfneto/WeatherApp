@@ -224,6 +224,7 @@ class WeatherScreenFragment : Fragment(), ActivityCompat.OnRequestPermissionsRes
 
     @SuppressLint("MissingPermission")
     private fun requestNewLocationData() {
+        setupLocationCallback()
         val locationRequest = LocationRequest()
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         locationRequest.interval = 0
@@ -233,7 +234,6 @@ class WeatherScreenFragment : Fragment(), ActivityCompat.OnRequestPermissionsRes
             locationRequest, locationCallback,
             Looper.myLooper()
         )
-        setupLocationCallback()
     }
 
     private fun setupLocationCallback() {
