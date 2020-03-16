@@ -17,11 +17,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.johnfneto.weatherapp.database.AppDataBase
 import com.johnfneto.weatherapp.database.LocationDao
-import com.johnfneto.weatherapp.models.WeatherLocation
 import com.johnfneto.weatherapp.ui.MainActivity
 import com.johnfneto.weatherapp.utils.AddressContainerIdlingResource
 import com.johnfneto.weatherapp.utils.RecyclerViewMatcher
-import kotlinx.coroutines.runBlocking
 import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
@@ -29,7 +27,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.IOException
-import java.util.*
 
 const val MY_CITY = "Bondi, AU"
 
@@ -75,7 +72,7 @@ class RecentSearchesAdapterTest {
             )
     }
 
-    @Test
+    /*@Test
     @Throws(Exception::class)
     fun insertLocation() = runBlocking {
         val location = WeatherLocation(
@@ -84,7 +81,7 @@ class RecentSearchesAdapterTest {
             Date().time
         )
         locationDao.saveLocation(location)
-    }
+    }*/
 
     @Test
     fun jumpToWeatherScreenFragment() {

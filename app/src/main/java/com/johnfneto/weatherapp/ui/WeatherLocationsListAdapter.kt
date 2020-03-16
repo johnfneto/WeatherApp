@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.johnfneto.weatherapp.R
-import com.johnfneto.weatherapp.models.WeatherLocation
 import com.johnfneto.weatherapp.databinding.LocationsListItemBinding
+import com.johnfneto.weatherapp.models.WeatherModel
 
 class WeatherLocationsListAdapter(
     private val onClickListener: View.OnClickListener,
@@ -16,7 +16,7 @@ class WeatherLocationsListAdapter(
     private val TAG = javaClass.simpleName
 
     private lateinit var binding: LocationsListItemBinding
-    private var locationsList = emptyList<WeatherLocation>()
+    private var locationsList = emptyList<WeatherModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DataBindingViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -29,7 +29,7 @@ class WeatherLocationsListAdapter(
 
     override fun getItemCount() = locationsList.size
 
-    internal fun updateLocations(locationsList: List<WeatherLocation>) {
+    internal fun updateLocations(locationsList: List<WeatherModel>) {
         this.locationsList = locationsList
         notifyDataSetChanged()
     }
@@ -41,9 +41,9 @@ class WeatherLocationsListAdapter(
     inner class DataBindingViewHolder(private val binding: LocationsListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: WeatherLocation) {
+        fun bind(item: WeatherModel) {
             binding.root.tag = item
-            binding.location = item
+            binding.weatherData = item
 
             itemView.setOnClickListener(onClickListener)
             itemView.setOnLongClickListener(onLongClickListener)

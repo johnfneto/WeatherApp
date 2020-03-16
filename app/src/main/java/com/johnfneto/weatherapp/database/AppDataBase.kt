@@ -4,14 +4,17 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.johnfneto.weatherapp.models.WeatherLocation
+import androidx.room.TypeConverters
+import com.johnfneto.weatherapp.database.converters.RoomConverters
+import com.johnfneto.weatherapp.models.WeatherModel
 import com.johnfneto.weatherapp.utils.DATABASE_NAME
 import kotlinx.coroutines.CoroutineScope
 
 /**
  * The Room database for weather location
  */
-@Database(entities = [WeatherLocation::class], version = 1, exportSchema = false)
+@Database(entities = [WeatherModel::class], version = 1, exportSchema = false)
+@TypeConverters(RoomConverters::class)
 abstract class AppDataBase
     : RoomDatabase() {
 

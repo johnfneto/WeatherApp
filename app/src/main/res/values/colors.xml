@@ -6,6 +6,8 @@
     <color name="colorCenter">#239eb1</color>
 
     <color name="backgroundColor">#3CF1EBF1</color>
+    <color name="backgroundColor2">#1CF1EBF1</color>
     <color name="whiteColor">#FFFFFF</color>
     <color name="blackColor">#000000</color>
+    <color name="transparentColor">#00000000</color>
 </resources>

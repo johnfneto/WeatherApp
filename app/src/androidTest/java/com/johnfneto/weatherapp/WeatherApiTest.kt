@@ -38,7 +38,7 @@ class WeatherApiTest {
 
         val mockRepo = mock<WeatherModel> {
             onBlocking {
-                weatherApi.getWeatherByCityAsync("San Francisco", "metric", BuildConfig.API_KEY)
+                weatherApi.getWeatherByCityAsync("San Francisco", BuildConfig.API_KEY)
             } doReturn Response.success(weatherModel)
         }
 
@@ -52,7 +52,7 @@ class WeatherApiTest {
 
         val mockRepo = mock<WeatherModel> {
             onBlocking {
-                weatherApi.getWeatherByZipCodeAsync("91932", "metric", BuildConfig.API_KEY)
+                weatherApi.getWeatherByZipCodeAsync("91932", BuildConfig.API_KEY)
             } doReturn Response.success(weatherModel)
         }
 

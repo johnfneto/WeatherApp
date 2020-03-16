@@ -1,21 +1,25 @@
 <resources>
     <string name="app_name">WeatherApp</string>
 
-    <string name="temp">%s\u2103</string>
+    <string name="temperature">Temperature:</string>
+    <string name="temp_c">%s\u2103</string>
+    <string name="temp_f">%s\u2109</string>
     <string name="celsius">\u2103</string>
     <string name="fahrenheit">\u2109</string>
-    <string name="min_temp">Min Temp: %s\u2103</string>
-    <string name="max_temp">Max Temp: %s\u2103</string>
+    <string name="min_temp_c">Min Temp: %s\u2103</string>
+    <string name="min_temp_f">Min Temp: %s\u2109</string>
+    <string name="max_temp_c">Max Temp: %s\u2103</string>
+    <string name="max_temp_f">Max Temp: %s\u2109</string>
     <string name="humidity">%d\%%</string>
     <string name="sunset">Sunset</string>
     <string name="sunrise">Sunrise</string>
     <string name="humidity_label">Humidity</string>
     <string name="wind">%s km/h</string>
     <string name="wind_speed">Wind speed</string>
-    <string name="wind_direction">Wind direction</string>
+    <string name="wind_direction">Wind dir</string>
     <string name="pressure">%d mBar</string>
     <string name="pressure_label">Pressure</string>
-    <string name="delete_location">Do you wish to delete %s?</string>
+    <string name="delete_location">Do you wish to delete %s, %s?</string>
     <string name="current_location">"Current location"</string>
     <string name="internet_unavailable">"Internet not connected!"</string>
     <string name="recent_searches">"Recent Searches"</string>

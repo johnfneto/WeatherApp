@@ -19,5 +19,4 @@ class WeatherRepository(private val weatherApi: WeatherAPI) {
 
     suspend fun getWeatherByZipCode(zipCode: String): Response<WeatherModel> =
         weatherApi.getWeatherByZipCodeAsync(zipCode,  BuildConfig.API_KEY)
-
 }

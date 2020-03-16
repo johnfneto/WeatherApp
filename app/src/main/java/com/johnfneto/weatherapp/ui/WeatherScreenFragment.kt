@@ -8,13 +8,15 @@ import android.location.Location
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
-import android.util.Log
 import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.inputmethod.EditorInfo
-import android.widget.*
+import android.widget.ArrayAdapter
+import android.widget.RelativeLayout
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.core.view.get
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -22,20 +24,18 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.gms.location.*
+import com.google.android.material.button.MaterialButtonToggleGroup
 import com.johnfneto.weatherapp.R
 import com.johnfneto.weatherapp.database.WeatherLocationsViewModel
 import com.johnfneto.weatherapp.databinding.FragmentWeatherScreenBinding
-import com.johnfneto.weatherapp.utils.PERMISSION_ID
+import com.johnfneto.weatherapp.utils.*
 import com.johnfneto.weatherapp.utils.PermissionsManager.checkPermissions
 import com.johnfneto.weatherapp.utils.PermissionsManager.isLocationEnabled
-import com.johnfneto.weatherapp.utils.Utils
 import com.johnfneto.weatherapp.utils.Utils.hideKeyboard
 import com.johnfneto.weatherapp.utils.Utils.isInternetAvailable
-import com.johnfneto.weatherapp.utils.observeOnce
 import com.johnfneto.weatherapp.weather_api.WeatherViewModel
 import com.squareup.picasso.Picasso
 import java.util.*
-
 
 class WeatherScreenFragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCallback {
     private val TAG = javaClass.simpleName
@@ -66,10 +66,13 @@ class WeatherScreenFragment : Fragment(), ActivityCompat.OnRequestPermissionsRes
         weatherLocationsViewModel = ViewModelProvider(this).get(WeatherLocationsViewModel::class.java)
         weatherViewModel = ViewModelProvider(this).get(WeatherViewModel::class.java)
 
+        setHasOptionsMenu(true)
         setupRecentLocationsObserver()
         setupWeatherApiObserver()
         loadLastWeatherLocation(args.locationName)
         setupSearchText()
+
+        //binding.cardView!!.setCardBackgroundColor(resources.getColor(R.color.backgroundColor))
 
         binding.recentSearchesButton.setOnClickListener {
             val action = WeatherScreenFragmentDirections.actionGotoRecentSearches()
@@ -152,7 +155,9 @@ class WeatherScreenFragment : Fragment(), ActivityCompat.OnRequestPermissionsRes
             }
 
             binding.updatedAt.text = Utils.formatDate(Calendar.getInstance().timeInMillis)
-            weatherLocationsViewModel.saveLocation(String.format(resources.getString(R.string.city), weatherData.name, weatherData.sys.country))
+            weatherData.updated = Calendar.getInstance().timeInMillis
+            weatherLocationsViewModel.saveLocation(weatherData)
+
         })
 
         weatherViewModel.errorStatus.observe(viewLifecycleOwner, Observer { errorMessage ->
@@ -193,7 +198,7 @@ class WeatherScreenFragment : Fragment(), ActivityCompat.OnRequestPermissionsRes
         if (checkPermissions(requireContext())) {
             if (isLocationEnabled(requireContext())) {
                 fusedLocationClient.lastLocation.addOnCompleteListener(requireActivity()) { task ->
-                    var location: Location? = task.result
+                    val location: Location? = task.result
                     if (location == null) {
                         requestNewLocationData()
                     } else {
@@ -257,6 +262,38 @@ class WeatherScreenFragment : Fragment(), ActivityCompat.OnRequestPermissionsRes
         if (requestCode == PERMISSION_ID) {
             if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 getLastLocation()
+            }
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.temperature_button, menu)
+
+
+        val item: MenuItem = menu.findItem(R.id.temperatureButton)
+        val layout = item.actionView as RelativeLayout
+
+        val materialButtonToggleGroup = layout[0] as MaterialButtonToggleGroup
+        if (Preferences.getTemperatureUnit(requireContext()) == TemperatureUnitsEnum.FAHRENHEIT.name) {
+            materialButtonToggleGroup.check(R.id.fahrenheitButton)
+        }
+        else {
+            materialButtonToggleGroup.check(R.id.celsiusButton)
+        }
+
+
+        materialButtonToggleGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
+
+            if (isChecked) {
+                when (checkedId) {
+                    R.id.celsiusButton -> {
+                        Preferences.setTemperatureCelsius(requireContext())
+                    }
+                    R.id.fahrenheitButton -> {
+                        Preferences.setTemperatureFahrenheit(requireContext())
+                    }
+                }
+                binding.invalidateAll()
             }
         }
     }

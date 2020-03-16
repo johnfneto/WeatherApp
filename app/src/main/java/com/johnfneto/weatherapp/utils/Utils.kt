@@ -9,6 +9,10 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.johnfneto.weatherapp.R
+import com.johnfneto.weatherapp.models.WeatherModel
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.ResponseBody.Companion.toResponseBody
+import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
@@ -37,6 +41,12 @@ object Utils {
         }
     }
 
+    fun buildErrorResponse(message: String?) = Response.error<WeatherModel>(
+        400,
+        "{\"key\":[$message]}"
+            .toResponseBody("application/json".toMediaTypeOrNull())
+    )
+
     fun hideKeyboard(activity: Activity?) {
         if (activity != null) {
             var view = activity.currentFocus
@@ -52,7 +62,13 @@ object Utils {
         = activity.applicationContext.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
 
     @JvmStatic
-    fun formatBearing(bearing: Int): String {
+    fun getCompassValue(bearing: Int): String {
+        val directions = arrayOf("N", "NE", "E", "SE", "S", "SW", "W", "NW")
+        return "from " + directions[ (((bearing % 360) / 45).toDouble().roundToInt() % 8) ]
+    }
+
+    @JvmStatic
+    fun getWindDirect(bearing: Int): String {
         val directions = arrayOf("N", "NE", "E", "SE", "S", "SW", "W", "NW")
         return directions[ (((bearing % 360) / 45).toDouble().roundToInt() % 8) ]
     }
@@ -73,4 +89,18 @@ object Utils {
 
     @JvmStatic
     fun formatShorterDate(date: Long): String = SimpleDateFormat("dd MMM, hh:mm a", Locale.ENGLISH).format(Date(date))
+
+    private fun convertKelvinToCelsius(kelvin: Double) = kelvin - 273.15
+
+    private fun convertKelvinToFahrenheit(kelvin: Double) = (kelvin - 273.15) * 9/5 + 32
+
+    fun getSelectedTemperatureUnit(context: Context, temp: Double): Double {
+        return when (Preferences.getTemperatureUnit(context)) {
+
+            TemperatureUnitsEnum.CELSIUS.name -> convertKelvinToCelsius(temp)
+            TemperatureUnitsEnum.FAHRENHEIT.name -> convertKelvinToFahrenheit(temp)
+
+            else -> 0.0
+        }
+    }
 }

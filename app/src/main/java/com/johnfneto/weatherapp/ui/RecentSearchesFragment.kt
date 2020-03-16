@@ -11,8 +11,8 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.johnfneto.weatherapp.R
 import com.johnfneto.weatherapp.database.WeatherLocationsViewModel
-import com.johnfneto.weatherapp.models.WeatherLocation
 import androidx.lifecycle.Observer
+import com.johnfneto.weatherapp.models.WeatherModel
 import kotlinx.android.synthetic.main.fragment_recent_searches.*
 
 
@@ -43,10 +43,10 @@ class RecentSearchesFragment : Fragment(R.layout.fragment_recent_searches) {
 
     private val onItemClickListener =
         View.OnClickListener { view ->
-            val location = view.tag as WeatherLocation
+            val location = view.tag as WeatherModel
 
             val args = Bundle()
-            args.putString("locationName", location.city)
+            args.putString("locationName", location.name + ", " + location.sys.country)
             Navigation.findNavController(getView()!!).navigate(R.id.weatherScreenFragment, args)
 
             // We should be using the code below, but there is a bug on the API:
@@ -57,13 +57,13 @@ class RecentSearchesFragment : Fragment(R.layout.fragment_recent_searches) {
 
     private val onLongClickListener =
         View.OnLongClickListener { view ->
-            val location = view.tag as WeatherLocation
+            val location = view.tag as WeatherModel
 
             deleteLocation(location)
             false
         }
 
-    private fun deleteLocation(location: WeatherLocation) {
+    private fun deleteLocation(location: WeatherModel) {
         val factory = LayoutInflater.from(requireContext())
         val dialogView = factory.inflate(R.layout.dialog_layout, null)
 
@@ -77,7 +77,7 @@ class RecentSearchesFragment : Fragment(R.layout.fragment_recent_searches) {
             dialog.dismiss()
         }
         val msgText: TextView = dialogView.findViewById(R.id.message)
-        msgText.text = String.format(resources.getString(R.string.delete_location), location.city)
+        msgText.text = String.format(resources.getString(R.string.delete_location), location.name, location.sys.country)
         dialog.show()
     }
 }
